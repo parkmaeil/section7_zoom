@@ -77,6 +77,23 @@ pageEncoding="UTF-8"%>
               </c:forEach>
               </tbody>
           </table>
+          <!-- 페이지 보여주는 부분 -->
+            <ul class="pagination justify-content-center">
+           				   <!-- 이전 -->
+           				   <c:if test="${pm.prev}">
+           				    <li class="page-item"><a class="page-link" href="${cpath}/list.do?page=${pm.startPage-1}">Prev</a></li>
+           				   </c:if>
+
+           				   <!-- 페이지 번호 출력 -->
+           				   <c:forEach var="page" begin="${pm.startPage}" end="${pm.endPage}">
+           				    <li class="page-item ${pm.cri.page==page ? 'active' : ''}"><a class="page-link" href="${cpath}/list.do?page=${page}">${page}</a></li>
+           				   </c:forEach>
+
+           				   <!-- 다음 -->
+           				   <c:if test="${pm.next}">
+           				    <li class="page-item"><a class="page-link" href="${cpath}/list.do?page=${pm.endPage+1}">Next</a></li>
+           				   </c:if>
+           	</ul>
           <c:if test="${!empty cus}">
               <button class="btn btn-sm btn-primary"  onclick="goRegister()">등록하기</button>
           </c:if>

@@ -20,6 +20,11 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok:1.18.24'
     // MyBatis Framework(방법론) API
     implementation 'org.mybatis:mybatis:3.5.6'
+    implementation 'org.apache.poi:poi:5.2.3'
+    implementation 'org.apache.poi:poi-ooxml:5.2.3'
+
+    implementation 'commons-fileupload:commons-fileupload:1.4'
+    implementation 'commons-io:commons-io:2.8.0'
 
     testImplementation platform('org.junit:junit-bom:5.9.1')
     testImplementation 'org.junit.jupiter:junit-jupiter'

@@ -20,7 +20,16 @@ pageEncoding="UTF-8"%>
     <div class="container">
       <h2>Web Database Programming</h2>
       <div class="card">
-        <div class="card-header">등록화면</div>
+        <div class="card-header">
+                   <!-- 파일 업로드 폼 (수평 정렬) -->
+                      <form action="${cpath}/registerBooksByFile.do" method="post" enctype="multipart/form-data" class="form-inline" style="margin-top: 20px; justify-content: center;">
+                             <div class="form-group">
+                                     <label for="fileUpload" class="mr-2">책 일괄 등록 (Excel):</label>
+                                     <input type="file" class="form-control-file mr-2" id="fileUpload" name="bookFile">
+                                     <button type="submit" class="btn btn-success btn-sm">업로드</button>
+                                </div>
+                      </form>
+        </div>
         <div class="card-body">
                 <form action="${cpath}/registerPost.do" method="post">
                     <div class="form-group">

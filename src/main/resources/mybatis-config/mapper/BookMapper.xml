@@ -4,8 +4,9 @@
         "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.example.repository.BookDAOMyBatis">
 
-     <select id="bookList" resultType="com.example.entity.BookDTO">
-         select * from book order by title asc
+     <select id="bookList" resultType="com.example.entity.BookDTO"
+             parameterType="com.example.entity.Criteria">
+         select * from book  limit  #{pageStart}, #{perPageNum}
      </select>
 
     <delete id="bookDelete">
@@ -29,5 +30,9 @@
         page=#{page}
         where num=#{num}
     </update>
+
+    <select id="totalCount" resultType="int">
+        select count(*) from book
+    </select>
 
 </mapper>

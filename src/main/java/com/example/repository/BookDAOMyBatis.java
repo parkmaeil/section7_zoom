@@ -1,16 +1,20 @@
 package com.example.repository;
 
 import com.example.entity.BookDTO;
+import com.example.entity.Criteria;
 import com.example.entity.CustomerDTO;
 import org.apache.ibatis.session.SqlSession;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.ss.usermodel.Sheet;
+import org.apache.poi.ss.usermodel.Workbook;
 
 import java.util.List;
 
 public class BookDAOMyBatis { // 리팩토링 => 중앙집중식 관리, 코드의 간결성, 자원의관리의 효율성
 
-        public List<BookDTO> bookList(){
+        public List<BookDTO> bookList(Criteria criteria){
             try(SqlSession session=MyBatisUtil.openSession()){ // close()
-                 return session.selectList("com.example.repository.BookDAOMyBatis.bookList");
+                 return session.selectList("bookList", criteria);
             }
         // try 블록이 종료되면 session은 자동으로 close 됩니다.
        }
@@ -46,5 +50,26 @@ public class BookDAOMyBatis { // 리팩토링 => 중앙집중식 관리, 코드�
         }
     }
 
+    public int totalCount(){
+            try(SqlSession session=MyBatisUtil.openSession()){
+                  return session.selectOne("totalCount"); // 106
+            }
+    }
 
+    public void excelInsert(Workbook wb) {
+        Sheet sheet =wb.getSheetAt(0); // BookDTO
+        try(SqlSession session=MyBatisUtil.openSession()){
+            for( Row row : sheet){
+                if(row.getRowNum()==0) continue;
+                // 스타트 스프링	40000	스프링	500
+                BookDTO dto=new BookDTO();
+                dto.setTitle(row.getCell(0).getStringCellValue()); // 제목
+                dto.setPrice((int)(row.getCell(1).getNumericCellValue())); // 가격
+                dto.setAuthor(row.getCell(2).getStringCellValue()); // 저자
+                dto.setPage((int)(row.getCell(3).getNumericCellValue())); // 페이지
+                session.insert("bookInsert", dto); //SQL
+            }
+            session.commit(); // 완료
+        }//
+    }
 }
