@@ -35,4 +35,27 @@
         select count(*) from book
     </select>
 
+    <insert id="addToCart" parameterType="com.example.entity.CartDTO">
+        INSERT INTO cart (customer_id, book_num, quantity)
+        VALUES (#{customer_id}, #{book_num}, #{quantity})
+    </insert>
+
+    <select id="cartList" resultType="com.example.entity.CartBookDTO">
+        select *
+        from cart c
+        inner join book b
+        on c.book_num=b.num
+        where c.customer_id=#{customer_id}
+    </select>
+
+    <delete id="removeCart">
+        delete from cart
+        where cart_number=#{cartNumber}
+    </delete>
+    <update id="quantityUpdate" parameterType="java.util.Map">
+        update cart
+        set quantity=#{quantity}
+        where cart_number=#{cartNumber}
+    </update>
+
 </mapper>

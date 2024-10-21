@@ -44,9 +44,35 @@ pageEncoding="UTF-8"%>
                   <td>${book.page}</td>
                </tr>
             </table>
+            <!-- 총액,  수량,  장바구니 담기 -->
+            <div class="row mb-3">
+               <div class="col-8 text-right">
+                 <!-- 수량 선택을 위한 스텝퍼와 총액 표시를 우측 정렬 -->
+                 <div class="d-inline-block mr-3">
+                   <label for="quantityInput" class="mr-2">수량:</label>
+                   <input type="number" id="quantityInput" value="1" min="1" class="form-control d-inline-block" style="width: auto;">
+                 </div>
+                 총액:<span id="totalPrice" class="d-inline-block">${book.price}</span> <!-- 예시로 book.price를 사용하였으나, 실제 총액 계산 로직 필요 -->
+               </div>
+               <div class="col-4">
+                 <!-- 장바구니에 담기 버튼의 넓이를 100%로 설정하고 색상을 빨간색으로 변경 -->
+                 <c:if test="${!empty cus}">
+                    <button class="btn btn-danger btn-sm w-100" id="addToCart">장바구니에 담기</button>
+                 </c:if>
+                 <c:if test="${empty cus}">
+                    <button class="btn btn-danger btn-sm w-100" id="addToCart" disabled>장바구니에 담기</button>
+                 </c:if>
+               </div>
+             </div>
             <button class="btn btn-sm btn-primary action">목록</button>
-            <button class="btn btn-sm btn-success action">수정</button>
-            <button class="btn btn-sm btn-warning action">삭제</button>
+            <c:if test="${!empty cus}">
+               <button class="btn btn-sm btn-success action">수정</button>
+               <button class="btn btn-sm btn-warning action">삭제</button>
+            </c:if>
+             <c:if test="${empty cus}">
+                 <button class="btn btn-sm btn-success action" disabled>수정</button>
+                 <button class="btn btn-sm btn-warning action" disabled>삭제</button>
+              </c:if>
         </div>
 
        <div class="card-footer">인프런_마프 1탄_박매일</div>
@@ -56,6 +82,44 @@ pageEncoding="UTF-8"%>
          <input type="hidden" name="num" id="num" value="${book.num}"/>
     </form>
  <script>
+      document.getElementById("quantityInput").addEventListener("change", function(){
+             let quantity=this.value;
+             let total=quantity*${book.price};
+             document.getElementById("totalPrice").innerHTML=total;
+        } );
+     // 장바구니 담기 : fetch().then().then().catch()
+      document.getElementById("addToCart").addEventListener("click", function(){
+          let book_num=${book.num};
+          let quantity=document.getElementById("quantityInput").value;
+          let customer_id="${cus.customer_id}";
+          // json : {     }
+          let data={
+            "book_num" : book_num,
+           "quantity"   :  parseInt(quantity),
+            "customer_id" : customer_id
+           }; // Object : JSON(문자열)
+           console.log(data);
+           let cartData=JSON.stringify(data);
+           console.log(cartData);
+           fetch("${cpath}/addToCart.do", {
+               method : "POST",
+               headers : { "Content-Type" : "application/json"},
+               body : cartData
+           })
+           .then(response=>response.json())
+           .then(data=>{
+             if(data.success){
+                    alert("장바구니 담기 성공");
+                    location.href="${cpath}/list.do";
+                 }else{
+                  alert("장바구니 담기 실패");
+             }
+            })
+           .catch(error=>{
+               console.log("Error:"+ error);
+            });
+      });
+
        document.querySelector(".card-body").addEventListener("click", function(e){
          if(e.target.classList.contains("action")){
               let form=document.getElementById("myForm");

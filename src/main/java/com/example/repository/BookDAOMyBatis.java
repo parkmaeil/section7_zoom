@@ -1,13 +1,12 @@
 package com.example.repository;
 
-import com.example.entity.BookDTO;
-import com.example.entity.Criteria;
-import com.example.entity.CustomerDTO;
+import com.example.entity.*;
 import org.apache.ibatis.session.SqlSession;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 
+import java.util.HashMap;
 import java.util.List;
 
 public class BookDAOMyBatis { // 리팩토링 => 중앙집중식 관리, 코드의 간결성, 자원의관리의 효율성
@@ -71,5 +70,36 @@ public class BookDAOMyBatis { // 리팩토링 => 중앙집중식 관리, 코드�
             }
             session.commit(); // 완료
         }//
+    }
+
+    public int addToCart(CartDTO cartDTO) {
+        try(SqlSession session=MyBatisUtil.openSession()){
+            int cnt=session.insert("addToCart", cartDTO);
+            session.commit(); // 완료
+            return cnt;
+        }
+    }
+   // 장바구니리스트
+    public List<CartBookDTO> cartList(String customerId) {
+            try(SqlSession session=MyBatisUtil.openSession()) {
+                return session.selectList("cartList", customerId);
+            }
+    }
+
+    public void removeCart(int cartNumber) {
+        try(SqlSession session=MyBatisUtil.openSession()){
+            session.insert("removeCart", cartNumber);
+            session.commit(); // 완료
+        }
+    }
+
+    public void quantityUpdate(int cartNumber, int quantity) {
+        try(SqlSession session=MyBatisUtil.openSession()){
+            HashMap<String, Integer> maps=new HashMap<>();
+            maps.put("cartNumber", cartNumber);
+            maps.put("quantity", quantity);
+            session.update("quantityUpdate", maps);
+            session.commit(); // 완료
+        }
     }
 }

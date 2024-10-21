@@ -21,6 +21,9 @@ pageEncoding="UTF-8"%>
      function goRegister(){
         location.href="${cpath}/registerGet.do";
      }
+     function goToCart(){
+       location.href="${cpath}/cartList.do?customer_id="+"${cus.customer_id}";
+     }
   </script>
 </head>
 <body>
@@ -43,6 +46,7 @@ pageEncoding="UTF-8"%>
                               <label>${cus.customer_name}님!!. [적립금] : ${cus.reserves}</label>
                               <button type="submit" class="btn btn-primary btn-sm">로그아웃</button>
                  </form>
+                  <button type="button" onclick="goToCart()" class="btn btn-danger btn-sm">장바구니 보기</button>
             </c:if>
         </div>
         <div class="card-body">
